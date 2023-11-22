@@ -151,8 +151,8 @@
             <input type="password" placeholder="Password" name="password">
             <button class="oauthButton">
                 Sign in
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="m6 17 5-5-5-5"></path>
                     <path d="m13 17 5-5-5-5"></path>
                 </svg>
@@ -162,11 +162,11 @@
                 <span>OR</span>
                 <div></div>
             </div>
-            
-    
-            
+
+
+
         </form>
-    
+
         <button onclick="signInGoogle()" class="oauthButton">
             <svg class="icon" viewBox="0 0 24 24">
                 <path
@@ -203,7 +203,7 @@
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
+        import { getAuth, GoogleAuthProvider, GithubAuthProvider, signInWithPopup, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
         // TODO: Add SDKs for Firebase products that you want to use
         // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -221,6 +221,7 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
+        const githubProvider = new GithubAuthProvider();
 
         const signInGoogle = () => {
             signInWithPopup(auth, provider)
@@ -243,34 +244,33 @@
         };
         window.signInGoogle = signInGoogle;
 
+        const signInGit = () => {
+            signInWithPopup(auth, githubProvider)
+                .then((result) => {
+                    let user = result.user;
+                    console.log(user);
+                    if (user) {
+                        window.location.href = "dashboard.html";
+                    } else {
+                        window.location.href = "index(Log in).html";
+                    }
+                })
+                .catch((err) => {
+                    let errorCode = err.code;
+                    let errorMsg = err.message;
+                    console.log(errorCode, errorMsg);
+                    if (errorCode == "auth/account-exists-with-different-credential") {
+                        emptyError.style.display = "block";
+                        emptyError.textContent =
+                            "An account already exists with this email address";
+                        emptyError.style.color = "orange";
+                        setTimeout(() => {
+                            emptyError.style.display = "none";
+                        }, 3000);
+                    }
+                }
 
 
-        // const signInGit = () => {
-        //     signInWithPopup(auth, githubProvider)
-        //         .then((result) => {
-        //             let user = result.user
-        //             console.log(user);
-        //             if (user) {
-        //                 window.location.href = "dashboard.html"
-        //             } else {
-        //                 window.location.href = "index(Log in).html"
-        //             }
-        //         })
-        //         .catch((err) => {
-        //             let errorCode = err.code
-        //             let errorMsg = err.message
-        //             console.log(errorCode, errorMsg);
-        //             if (errorCode == "auth/account-exists-with-different-credential") {
-        //                 emptyError.style.display = "block"
-        //                 emptyError.textContent = "An account already exist with this email address";
-        //                 emptyError.style.color = "orange"
-        //                 setTimeout(() => {
-        //                     emptyError.style.display = "none"
-        //                 }, 3000)
-        //             }
-        //         })
-        // }
-        // window.signInGit = signInGit
     </script>
 </body>
 
